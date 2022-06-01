@@ -24,6 +24,7 @@ class SqlAction():
             raise e
 
     def get_all_tables(self):
+        self.check_connection()
         sql = "show tables"
         self.cursor.execute(sql)
         tables = self.cursor.fetchall()
@@ -155,7 +156,34 @@ class SqlAction():
         self.database.close()
         log.info('已经关闭sql连接')
 
+    def rename_table(self,old_name,new_name):
+        self.check_connection()
+        self.check_table_exist(old_name)
+        sql = f"alter table `{old_name}` rename to `{new_name}`;"
+        try:
+            # 执行SQL语句
+            self.cursor.execute(sql)
+            # 向数据库提交
+            self.database.commit()
+        except:
+            self.database.close()
+            log.error(f'表改名失败,sql:{sql}')
+
+    def drop_table(self,old_name):
+        self.check_connection()
+        self.check_table_exist(old_name)
+        sql = f"drop table `{old_name}`"
+        try:
+            # 执行SQL语句
+            self.cursor.execute(sql)
+            # 向数据库提交
+            self.database.commit()
+        except:
+            self.database.close()
+            log.error(f'表改名失败,sql:{sql}')
+
 if __name__ == '__main__':
     test = SqlAction('101.35.49.209','root','543049601','trader_genius')
+    test.rename_table('all_genius', 'temp_genius')
     test.get_data_from_mysql("000001.SZ")
     test.quit_database()

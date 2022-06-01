@@ -5,7 +5,7 @@ from sql import *
 from trader import trader
 
 brain_num = 34
-trade_gen = 100
+trade_gen = 10
 trader_num = 20
 change = 1
 
@@ -13,12 +13,7 @@ trader_genius_db = SqlAction('101.35.49.209', 'root', '543049601', 'trader_geniu
 trading_data_db = SqlAction('101.35.49.209', 'root', '543049601', 'trading_data')
 conn = create_engine('mysql+pymysql://root:543049601@101.35.49.209:3306/trader_genius')
 
-codes = trading_data_db.tables_list
-# solved = trader_genius_db.tables_list
-# not_solved = []
-# for i in codes:
-#     if i not in solved:
-#         not_solved.append(i)
+
 header = []
 for i in range(1, brain_num + 1):
     header.append(f'参数{i}')
@@ -37,7 +32,7 @@ def training(code):
     temp=[]
     trading_data = trading_data_db.get_data_from_mysql(code)
     try:
-        genius = list(trader_genius_db.get_data_from_mysql('all_genius','*',f'code="{code}"'))
+        genius = list(trader_genius_db.get_data_from_mysql('temp_genius','`参数1`,`参数2`,`参数3`,`参数4`,`参数5`,`参数6`,`参数7`,`参数8`,`参数9`,`参数10`,`参数11`,`参数12`,`参数13`,`参数14`,`参数15`,`参数16`,`参数17`,`参数18`,`参数19`,`参数20`,`参数21`,`参数22`,`参数23`,`参数24`,`参数25`,`参数26`,`参数27`,`参数28`,`参数29`,`参数30`,`参数31`,`参数32`,`参数33`,`参数34`,`得分`',f'code="{code}"'))
         if genius == []:
             genius = [[0] * (brain_num + 1)]
     except:
@@ -65,7 +60,7 @@ def training(code):
         genius.append(think_temp)
         temp.append(sort_list[0][1])
         # 随机丢失基因(意外夭折)
-        for i in range(int(len(genius) * 0.1)):
+        for i in range(int(len(genius)-9)):
             score_min = min(temp)
             index = temp.index(score_min)
             del temp[index]
@@ -79,6 +74,23 @@ def training(code):
 
 
 if __name__ == '__main__':
-    training('000001.SZ')
-    with Pool(processes=8) as p:
-        p.map(training,codes)
+    # training('000001.SZ')
+    while True:
+        codes = trading_data_db.tables_list
+        try:
+            solved = trader_genius_db.get_data_from_mysql('all_genius','distinct code')
+        except:
+            solved = []
+        not_solved = []
+        for i in codes:
+            if i not in solved:
+                not_solved.append(i)
+        # training('000001.SZ')
+        with Pool(processes=8) as p:
+            p.map(training,not_solved)
+        trader_genius_db.drop_table('temp_genius')
+        trader_genius_db.rename_table('all_genius','temp_genius')
+        trader_genius_db.quit_database()
+        trading_data_db.quit_database()
+        trader_genius_db = SqlAction('101.35.49.209', 'root', '543049601', 'trader_genius')
+        trading_data_db = SqlAction('101.35.49.209', 'root', '543049601', 'trading_data')
