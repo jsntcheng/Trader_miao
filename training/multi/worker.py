@@ -12,7 +12,7 @@ from sql import SqlAction
 from trader import trader
 
 brain_num = 34
-trade_gen = 10
+trade_gen = 50
 trader_num = 20
 change = 1
 
