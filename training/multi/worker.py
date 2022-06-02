@@ -9,7 +9,7 @@ from multiprocessing.managers import BaseManager
 from sqlalchemy import create_engine
 
 from sql import SqlAction
-from training.trader import trader
+from trader import trader
 
 brain_num = 34
 trade_gen = 10
@@ -89,5 +89,5 @@ def training(h):
 
 if __name__ == '__main__':
     while True:
-        with Pool(4) as p:
+        with Pool(8) as p:
             p.map(training,range(99999))
