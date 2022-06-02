@@ -165,7 +165,8 @@ class SqlAction():
             self.cursor.execute(sql)
             # 向数据库提交
             self.database.commit()
-        except:
+        except Exception as e:
+            print(e)
             self.database.close()
             log.error(f'表改名失败,sql:{sql}')
 
@@ -178,9 +179,10 @@ class SqlAction():
             self.cursor.execute(sql)
             # 向数据库提交
             self.database.commit()
-        except:
+        except Exception as e:
+            print(e)
             self.database.close()
-            log.error(f'表改名失败,sql:{sql}')
+            log.error(f'表删除失败,sql:{sql}')
 
 if __name__ == '__main__':
     test = SqlAction('101.35.49.209','root','543049601','trader_genius')
