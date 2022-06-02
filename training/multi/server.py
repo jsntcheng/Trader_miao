@@ -3,7 +3,7 @@ from time import sleep
 import time
 trader_genius_db = SqlAction('101.35.49.209', 'root', '543049601', 'trader_genius')
 trading_data_db = SqlAction('101.35.49.209', 'root', '543049601', 'trading_data')
-start_version = min(trader_genius_db.get_data_from_mysql('training_result','version'))
+start_version = max(trader_genius_db.get_data_from_mysql('training_result','version'))
 trader_genius_db.update_data_into_mysql('training_per','status = "ready"','status="busy"')
 print(f'本次训练，继续进行{int(start_version)+1}号版本')
 while True:
