@@ -167,6 +167,7 @@ class SqlAction():
             self.database.commit()
         except Exception as e:
             print(e)
+            self.database.rollback()
             self.database.close()
             log.error(f'表改名失败,sql:{sql}')
 
@@ -181,6 +182,7 @@ class SqlAction():
             self.database.commit()
         except Exception as e:
             print(e)
+            self.database.rollback()
             self.database.close()
             log.error(f'表删除失败,sql:{sql}')
 
