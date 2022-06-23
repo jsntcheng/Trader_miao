@@ -15,10 +15,9 @@ while True:
     print(f'当前训练基于版本{start_version},检查次数{count}')
     if int(now_version) > int(start_version):
         print(f'{start_version}号版本训练完成')
+        trader_genius_db.truncate_table('temp_genius')
         trader_genius_db.drop_table('temp_genius')
-        sleep(3)
         trader_genius_db.rename_table('all_genius','temp_genius')
-        sleep(3)
         trader_genius_db.insert_data_into_mysql('training_result',(now_version,time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) ))
         count = 0
         start_version = now_version

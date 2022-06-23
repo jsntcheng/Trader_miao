@@ -174,7 +174,7 @@ class SqlAction():
     def drop_table(self,old_name):
         self.check_connection()
         self.check_table_exist(old_name)
-        sql = f"drop table `{old_name}`"
+        sql = f"drop table `{old_name}`;"
         try:
             # 执行SQL语句
             self.cursor.execute(sql)
@@ -185,6 +185,21 @@ class SqlAction():
             self.database.rollback()
             self.database.close()
             log.error(f'表删除失败,sql:{sql}')
+
+    def truncate_table(self,table_name):
+        self.check_connection()
+        self.check_table_exist(table_name)
+        sql = f'truncate table {table_name};'
+        try:
+            # 执行SQL语句
+            self.cursor.execute(sql)
+            # 向数据库提交
+            self.database.commit()
+        except Exception as e:
+            print(e)
+            self.database.rollback()
+            self.database.close()
+            log.error(f'表清空失败,sql:{sql}')
 
 if __name__ == '__main__':
     test = SqlAction('101.35.49.209','root','543049601','trader_genius')

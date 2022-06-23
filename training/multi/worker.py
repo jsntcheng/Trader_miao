@@ -89,5 +89,5 @@ def training(h):
 
 if __name__ == '__main__':
     while True:
-        with Pool(8) as p:
+        with Pool(4) as p:
             p.map(training,range(99999))
